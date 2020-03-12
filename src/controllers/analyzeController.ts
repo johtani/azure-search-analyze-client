@@ -33,6 +33,8 @@ export class AnalyzeController {
 
         // TODO check all params are set.
 
+
+
         let request = new AnalyzeRequest(
             selectedRequest.serviceName,
             selectedRequest.apiVersion,
@@ -61,8 +63,13 @@ export class AnalyzeController {
         const content = '###\nserviceName = ""\napiVersion = ""\napiKey = ""\nindexName = ""\nanalyzerNames = [""]\ntext = ""\n';
         const language = 'analyze';
         let doc = await workspace.openTextDocument({language, content});
-
-        const editorColumn = window.activeTextEditor!.viewColumn;
+        let editorColumn;
+        if (window.activeTextEditor) {
+            editorColumn = window.activeTextEditor.viewColumn;
+        }
+        if (!editorColumn) {
+            editorColumn = 1 as ViewColumn;
+        }
         window.showTextDocument(doc, editorColumn);
     }
 

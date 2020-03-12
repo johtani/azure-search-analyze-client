@@ -10,13 +10,29 @@ export interface RequestRangeOptions {
     ignoreEmptyLine?: boolean;
 }
 
-export interface SelectedRequest {
+export class SelectedRequest {
     text: string;
-    serviceName: string,
-    apiVersion: string,
-    apiKey: string,
-    indexName: string,
-    analyzerNames: string[]
+    serviceName: string;
+    apiVersion: string;
+    apiKey: string;
+    indexName: string;
+    analyzerNames: string[];
+
+    public constructor(text: string, serviceName: string, apiVersion: string, apiKey: string, indexName: string, analyzerNames: string[]) {
+        this.text = text;
+        this.serviceName = serviceName;
+        this.apiVersion = apiVersion;
+        this.apiKey = apiKey;
+        this.indexName = indexName;
+        this.analyzerNames = analyzerNames;
+    }
+
+    public hasError(): string[] {
+        let errors:string[] = [];
+
+
+        return errors;
+    }
 }
 
 
@@ -68,14 +84,7 @@ export class Selector {
             }
         }
         
-        return {
-            text: text,
-            serviceName: serviceName,
-            apiVersion: apiVersion,
-            apiKey: apiKey,
-            indexName: indexName,
-            analyzerNames: analyzerNames
-        };
+        return new SelectedRequest(text, serviceName, apiVersion, apiKey, indexName, analyzerNames);
     }
     
 
