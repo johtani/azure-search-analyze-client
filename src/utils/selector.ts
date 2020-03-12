@@ -27,10 +27,32 @@ export class SelectedRequest {
         this.analyzerNames = analyzerNames;
     }
 
-    public hasError(): string[] {
+    public hasErrors(): string[] {
         let errors:string[] = [];
-
-
+        if(!this.text) {
+            errors.push("text is empty. ");
+        }
+        if(!this.serviceName) {
+            errors.push("serviceName is empty. ");
+        }
+        if(!this.apiVersion) {
+            errors.push("apiVersion is empty. ");
+        }
+        if(!this.apiKey) {
+            errors.push("apiKey is empty. ");
+        }
+        if(!this.indexName) {
+            errors.push("indexName is empty. ");
+        }
+        if(!this.analyzerNames) {
+            errors.push("analyzerNames is empty. ");
+        } else {
+            for (const analyzerName of this.analyzerNames) {
+                if(!analyzerName) {
+                    errors.push("analyzerNames has empty string. ");
+                }
+            }
+        }
         return errors;
     }
 }
@@ -87,9 +109,8 @@ export class Selector {
         return new SelectedRequest(text, serviceName, apiVersion, apiKey, indexName, analyzerNames);
     }
     
-
     private static getVariable(line: string): string {
-        return line.substring(line.indexOf("=")+1).trim();
+        return JSON.parse(line.substring(line.indexOf("=")+1));
     }
 
     private static getVariables(line: string): string[] {

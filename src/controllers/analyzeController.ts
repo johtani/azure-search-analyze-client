@@ -17,6 +17,8 @@ export class AnalyzeController {
         this._webview = new ResponseWebView();
     }
 
+    private static const messageBoxOption = {modal: true};
+
     public async analyze( range: Range) {
         const editor = window.activeTextEditor;
         const document = window.activeTextEditor?.document;
@@ -28,12 +30,16 @@ export class AnalyzeController {
 
         if (!selectedRequest) {
             //TODO error message 
+            window.showErrorMessage("There is no parameters/text in the editor. ", AnalyzeController.messageBoxOption);
             return;
         }
 
         // TODO check all params are set.
-
-
+        const errors = selectedRequest.hasErrors();
+        if (errors) {
+            window.showErrorMessage(errors.join("\r\n"), AnalyzeController.messageBoxOption);
+            return;
+        }
 
         let request = new AnalyzeRequest(
             selectedRequest.serviceName,
