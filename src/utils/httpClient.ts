@@ -1,0 +1,61 @@
+import * as request from 'request';
+import { AnalyzeRequest } from "../models/analyzeRequest";
+import { AnalyzeResponse } from "../models/analyzeResponse";
+
+export class HttpClient {
+    public async send(analyzeRequest: AnalyzeRequest): Promise<AnalyzeResponse>{
+        let options: any = {
+            method: "POST",
+            url: analyzeRequest.url,
+            body: this.normalizeBody(JSON.stringify(analyzeRequest.body)),
+            headers: analyzeRequest.headers
+        };
+        
+        return new Promise<AnalyzeResponse>((resolve, reject)=> {
+            request(options, (error: any, response: any, body: any) => {
+                if(error) {
+                    console.log("error!!");
+                    let analyzeResponse = {
+                        statusCode: error.statusCode,
+                        message: error.message
+                    };
+                    //console.log(analyzeResponse);
+                    reject(analyzeResponse);
+                } else {
+                    //console.log("resolve!");
+                    let analyzeResponse: AnalyzeResponse = {
+                        statusCode: response.statusCode,
+                        message: response.statusMessage,
+                        analyzerName: analyzeRequest.analyzeName,
+                    };
+                    let body = response.body;
+                    //console.log(response);
+                    if(body) {
+                        try{
+                            analyzeResponse.tokens = JSON.parse(response.body).tokens;
+                        }catch(ex){
+                            //FIXME logging
+                            console.log(ex.message);
+                            console.log(ex.statusMessage);
+                        }
+                    }
+                    if(response.statusCode === 200) {
+                        analyzeResponse.completed = true;
+                    } else {
+                        analyzeResponse.completed = false;
+                    }
+                    resolve(analyzeResponse);
+                }                
+            });
+        });
+    }
+
+    private normalizeBody(body:string):string {
+
+        if(body && body.length > 0) {
+            body = body.replace(/[\r\n]+/g, '');
+        }
+
+        return body;
+    }
+}
