@@ -10,15 +10,12 @@ export class ResponseWebView {
     public constructor() {
     }
 
-    public async render(responses: AnalyzeResponse[]) {
-		const column = window.activeTextEditor
-			? window.activeTextEditor.viewColumn
-            : undefined;
+    public async render(responses: AnalyzeResponse[], viewColumn: ViewColumn) {
         if (!this._panel) {
             this._panel = window.createWebviewPanel(
                 "azure-search-analyze",
                 "Analyze Response",
-                column || ViewColumn.One,
+                viewColumn,
                 {
                     enableFindWidget: true,
                     enableScripts: true,

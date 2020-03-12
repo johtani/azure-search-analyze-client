@@ -2,7 +2,7 @@ import { AnalyzeRequest } from "../models/analyzeRequest";
 import { HttpClient } from "../utils/httpClient";
 import { ResponseTextDocuemntView } from "../views/responseTextDocumentView";
 import { AnalyzeResponse } from "../models/analyzeResponse";
-import { Range, TextEditor, window } from "vscode";
+import { Range, TextEditor, window, ViewColumn, Uri, workspace } from "vscode";
 import { Selector } from "../utils/selector";
 import { ResponseWebView } from "../views/responseWebView";
 
@@ -48,17 +48,26 @@ export class AnalyzeController {
             let response = await this._httpClient.send(request);
             responses.push(response);
         }
+
+        const editorColumn = window.activeTextEditor!.viewColumn;
+        const viewColumn = ((editorColumn as number) + 1) as ViewColumn;
         
-        //this._textView.render(responses);
-        this._webview.render(responses);
+        //this._textView.render(responses, viewColumn);
+        this._webview.render(responses, viewColumn);
     }
 
-    public async createAnalyzeEditor() {
+    public async createAnalyzeEditor(filename?: string) {
         //Analyze 用のパラメータを設定する".analyze"拡張子のファイル生成する処理
+        const content = '###\nserviceName = ""\napiVersion = ""\napiKey = ""\nindexName = ""\nanalyzerNames = [""]\ntext = ""\n';
+        const language = 'analyze';
+        let doc = await workspace.openTextDocument({language, content});
 
+        const editorColumn = window.activeTextEditor!.viewColumn;
+        window.showTextDocument(doc, editorColumn);
     }
 
     public dispose() {
+        this._webview.dispose();
     }
 
 

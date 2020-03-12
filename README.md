@@ -6,7 +6,7 @@ The client provides viewer of Analyze API Response.
 ## Features
 
 * Send Analyze Request in editor and view response in another editor with webview
-  * Parameters can be set in the file that has `.analyze` extention.
+  * Parameters can be set in the file that has `.analyze` extension.
 * Create `.analyze` file from template
 
 ## Usage

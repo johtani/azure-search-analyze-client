@@ -19,17 +19,14 @@ export class HttpClient {
                         statusCode: error.statusCode,
                         message: error.message
                     };
-                    //console.log(analyzeResponse);
                     reject(analyzeResponse);
                 } else {
-                    //console.log("resolve!");
                     let analyzeResponse: AnalyzeResponse = {
                         statusCode: response.statusCode,
                         message: response.statusMessage,
                         analyzerName: analyzeRequest.analyzeName,
                     };
                     let body = response.body;
-                    //console.log(response);
                     if(body) {
                         try{
                             analyzeResponse.tokens = JSON.parse(response.body).tokens;

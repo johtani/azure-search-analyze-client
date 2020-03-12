@@ -6,12 +6,12 @@ export class ResponseTextDocuemntView {
     public constructor() {
     }
 
-    public async render(responses: AnalyzeResponse[]) {
+    public async render(responses: AnalyzeResponse[], viewColumn: ViewColumn) {
         const content = this.getTextDocumentResponse(responses);
         const language = "plaintext";
 
         let document = await workspace.openTextDocument({language, content});
-        window.showTextDocument(document);
+        window.showTextDocument(document, viewColumn);
     }
 
     private getTextDocumentResponse(responses: AnalyzeResponse[]) {

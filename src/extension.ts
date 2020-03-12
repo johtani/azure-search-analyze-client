@@ -27,6 +27,13 @@ export function activate(context: ExtensionContext) {
 				analyzeController.analyze(range);
 		})
 	);
+	// create analyze file
+	context.subscriptions.push(
+		commands.registerCommand('create.azure-search.analyze', 
+			async () => {
+				analyzeController.createAnalyzeEditor();
+		})
+	);
 
 }
 
