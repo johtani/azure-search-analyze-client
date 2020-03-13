@@ -17,7 +17,7 @@ export class AnalyzeController {
         this._webview = new ResponseWebView();
     }
 
-    private static const messageBoxOption = {modal: true};
+    private static messageBoxOption = {modal: true};
 
     public async analyze( range: Range) {
         const editor = window.activeTextEditor;
@@ -36,7 +36,7 @@ export class AnalyzeController {
 
         // TODO check all params are set.
         const errors = selectedRequest.hasErrors();
-        if (errors) {
+        if (errors && errors.length > 0) {
             window.showErrorMessage(errors.join("\r\n"), AnalyzeController.messageBoxOption);
             return;
         }
@@ -66,7 +66,7 @@ export class AnalyzeController {
 
     public async createAnalyzeEditor(filename?: string) {
         //Analyze 用のパラメータを設定する".analyze"拡張子のファイル生成する処理
-        const content = '###\nserviceName = ""\napiVersion = ""\napiKey = ""\nindexName = ""\nanalyzerNames = [""]\ntext = ""\n';
+        const content = '###\napiVersion = "?api-version=2019-05-06"\nserviceName = ""\napiKey = ""\nindexName = ""\nanalyzerNames = [""]\ntext = ""\n';
         const language = 'analyze';
         let doc = await workspace.openTextDocument({language, content});
         let editorColumn;
