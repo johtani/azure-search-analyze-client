@@ -1,10 +1,10 @@
-import {Disposable, WebviewPanel, ViewColumn, window, Uri, Webview} from 'vscode';
+import { Disposable, WebviewPanel, ViewColumn, window, Uri, Webview } from 'vscode';
 import { AnalyzeResponse } from "../models/analyzeResponse";
 import { TokenInfo } from '../models/tokenInfo';
 
 export class ResponseWebView {
     public static currentPanel: ResponseWebView | undefined;
-	private _panel: WebviewPanel | undefined;
+    private _panel: WebviewPanel | undefined;
     private _disposables: Disposable[] = [];
 
     public constructor() {
@@ -27,9 +27,9 @@ export class ResponseWebView {
 
     }
 
-	private getHtmlForWebview(responses: AnalyzeResponse[]) {
+    private getHtmlForWebview(responses: AnalyzeResponse[]) {
 
-		return `<!DOCTYPE html>
+        return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -44,7 +44,7 @@ export class ResponseWebView {
             </body>
             </html>`;
     }
-    
+
     private getTableView(responses: AnalyzeResponse[]) {
         let columnSize = this.getMaxTokenListLength(responses);
 
@@ -67,7 +67,7 @@ export class ResponseWebView {
         let header = ["<td>analyzer name</td>"];
 
         for (let index = 0; index < columnSize; index++) {
-            header.push("<td>Token["+index+"]</td>");
+            header.push("<td>Token[" + index + "]</td>");
         }
         return header.join("\n");
     }
@@ -76,10 +76,10 @@ export class ResponseWebView {
         let body = [""];
         for (const response of responses) {
             body.push("<tr>");
-            body.push("<td>"+response.analyzerName+"</td>");
+            body.push("<td>" + response.analyzerName + "</td>");
             if (response.tokens) {
                 for (let index = 0; index < columnSize; index++) {
-                    body.push("<td>"+this.getTokensInCell(response.tokens, index)+"</td>");
+                    body.push("<td>" + this.getTokensInCell(response.tokens, index) + "</td>");
                 }
             }
             body.push("</tr>");
@@ -101,8 +101,13 @@ export class ResponseWebView {
     private getMaxTokenListLength(responses: AnalyzeResponse[]) {
         let max = 0;
         for (const response of responses) {
-            if (response.tokens && max <= response.tokens?.length) {
-                max = response.tokens.length;
+            if (response.tokens) {
+                let lastPosition = response.tokens[response.tokens.length - 1].position;
+                if (lastPosition) {
+                    if (max <= lastPosition) {
+                        max = lastPosition + 1;
+                    }
+                }
             }
         }
         return max;
@@ -114,12 +119,12 @@ export class ResponseWebView {
         if (this._panel) {
             this._panel.dispose();
         }
-		while (this._disposables.length) {
-			const x = this._disposables.pop();
-			if (x) {
-				x.dispose();
-			}
-		}
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
     }
 
 }
