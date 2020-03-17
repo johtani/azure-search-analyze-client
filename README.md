@@ -24,7 +24,11 @@ The client provides viewer of Analyze API Response.
 
 ## Release Notes
 
-Not release yet.
+### 0.2.0
+
+- Show original text in Response View
+- Show token start/end offset of the text in Response View
+- Show error message in Response View if there are errors in each requests
 
 ### 0.1.0
 
