@@ -2,7 +2,7 @@
 	"name": "azure-search-analyze-client",
 	"displayName": "Azure Search Analyze Client",
 	"description": "The Client for Azure Cognitive Search Analyze API",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"publisher": "johtani",
 	"author": {
 		"name": "Jun Ohtani"

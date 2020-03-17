@@ -29,7 +29,12 @@ export class HttpClient {
                     let body = response.body;
                     if(body) {
                         try{
-                            analyzeResponse.tokens = JSON.parse(response.body).tokens;
+                            let bodyJson = JSON.parse(response.body);
+                            if (bodyJson.tokens) {
+                                analyzeResponse.tokens = bodyJson.tokens;
+                            } else {
+                                analyzeResponse.errorDetail = bodyJson.error.message;
+                            }
                         }catch(ex){
                             //FIXME logging
                             console.log(ex.message);

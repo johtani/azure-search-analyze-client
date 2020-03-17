@@ -10,7 +10,7 @@ export class ResponseWebView {
     public constructor() {
     }
 
-    public async render(responses: AnalyzeResponse[], viewColumn: ViewColumn) {
+    public async render(responses: AnalyzeResponse[], viewColumn: ViewColumn, originalText: string) {
         if (!this._panel) {
             this._panel = window.createWebviewPanel(
                 "azure-search-analyze",
@@ -23,26 +23,50 @@ export class ResponseWebView {
             );
             this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
         }
-        this._panel.webview.html = this.getHtmlForWebview(responses);
+        this._panel.webview.html = this.getHtmlForWebview(responses, originalText);
 
     }
 
-    private getHtmlForWebview(responses: AnalyzeResponse[]) {
+    private getHtmlForWebview(responses: AnalyzeResponse[], originalText: string) {
 
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
-                <!--
-                Use a content security policy to only allow loading images from https or from our extension directory,
-                and only allow scripts that have a specific nonce.
-                -->
+                <style type="text/css">
+                div.error {
+                    color: #DC143C;
+                }
+                </style>
                 <title>Analyze Responses</title>
             </head>
             <body>
+                <div>
+                  Original Text: ${originalText}
+                </div>
+                <br/>
                 ${this.getTableView(responses)}
+                * [start:end] is each token's start offset and end offset in input text.
+                <br/>
+                <br/>
+                ${this.showErrors(responses)}
             </body>
             </html>`;
+    }
+
+    private showErrors(responses: AnalyzeResponse[]) {
+        let errors = '';
+
+        for (const response of responses) { 
+            if (!response.completed) {
+                errors = response.analyzerName + " request has an error. " + response.errorDetail + "<br/>";
+            }
+        }
+        if (errors.length > 0) {
+            errors = '<h2>Errors</h2><div class="error">' + errors + "</div>";
+        }
+
+        return errors;
     }
 
     private getTableView(responses: AnalyzeResponse[]) {
@@ -76,7 +100,7 @@ export class ResponseWebView {
         let body = [""];
         for (const response of responses) {
             body.push("<tr>");
-            body.push("<td>" + response.analyzerName + "</td>");
+            body.push("<td>" + response.analyzerName + "<br/>[start:end]</td>");
             if (response.tokens) {
                 for (let index = 0; index < columnSize; index++) {
                     body.push("<td>" + this.getTokensInCell(response.tokens, index) + "</td>");
@@ -91,12 +115,12 @@ export class ResponseWebView {
         let cell = "";
         for (let index = 0; index < tokens.length; index++) {
             if (tokens[index].position === cellIndex) {
-                cell += tokens[index].token + "<br/>";
+                cell += tokens[index].token  + "<br/>\n[" + 
+                tokens[index].startOffset+ ":" + tokens[index].endOffset + "]" + "<br/>";
             }
         }
         return cell;
     }
-
 
     private getMaxTokenListLength(responses: AnalyzeResponse[]) {
         let max = 0;
@@ -112,7 +136,6 @@ export class ResponseWebView {
         }
         return max;
     }
-
 
     public dispose() {
         ResponseWebView.currentPanel = undefined;

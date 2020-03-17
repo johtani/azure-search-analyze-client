@@ -6,4 +6,5 @@ export interface AnalyzeResponse {
     message?:string;
     tokens?:Array<TokenInfo>;
     completed?:boolean;
+    errorDetail?:string;
 }

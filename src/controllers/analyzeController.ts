@@ -29,12 +29,10 @@ export class AnalyzeController {
         const selectedRequest = await Selector.getRequest(editor, range);
 
         if (!selectedRequest) {
-            //TODO error message 
             window.showErrorMessage("There is no parameters/text in the editor. ", AnalyzeController.messageBoxOption);
             return;
         }
 
-        // TODO check all params are set.
         const errors = selectedRequest.hasErrors();
         if (errors && errors.length > 0) {
             window.showErrorMessage(errors.join("\r\n"), AnalyzeController.messageBoxOption);
@@ -60,8 +58,8 @@ export class AnalyzeController {
         const editorColumn = window.activeTextEditor!.viewColumn;
         const viewColumn = ((editorColumn as number) + 1) as ViewColumn;
         
-        //this._textView.render(responses, viewColumn);
-        this._webview.render(responses, viewColumn);
+        //this._textView.render(responses, viewColumn, selectedRequest.text);
+        this._webview.render(responses, viewColumn, selectedRequest.text);
     }
 
     public async createAnalyzeEditor(filename?: string) {
