@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [unrelease]
 
+- Switch `requst` to `node-fetch`
+
 ## [0.2.0] - 2019-03-17
 
 - Show original text in Response View
